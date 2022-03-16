@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Card = (props: any) => {
+const Card = (Props: any) => {
   return (
     <CardWrapper>
       <div></div>

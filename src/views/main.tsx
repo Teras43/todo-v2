@@ -1,36 +1,60 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { ListCollection } from "../components";
 import { v4 as uuidv4 } from "uuid";
 
-const Main = () => {
-  const [listState, useListState] = useState({});
+type ListState = {
+  id: string;
+  title: string;
+  tasks: any;
+}[];
 
-  const KeyDown = (key: any) => {
-    if (key.keyCode !== 13) {
+const Main = () => {
+  const [listState, setListState] = useState<ListState>([]);
+
+  const [inputValue, setInputValue] = useState<string>("");
+
+  const KeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.code !== "Enter") {
       return;
     } else {
-      SetListStateFn(key);
+      SetListStateFn();
     }
   };
 
-  const SetListStateFn = (key: any) => {
-    useListState({
-      id: uuidv4(),
-      title: key.target.value,
-      tasks: {},
+  const SetListStateFn = () => {
+    // setListState({
+    //   id: uuidv4(),
+    //   title: key.target.value,
+    //   tasks: {},
+    // });
+    setListState((previousState) => {
+      return [
+        ...previousState,
+        {
+          id: uuidv4(),
+          title: inputValue,
+          tasks: {},
+        },
+      ];
     });
+    setInputValue("");
   };
 
   return (
     <ContentWrapper>
-      <TitleDiv>Remember To-Do</TitleDiv>
+      <TitleDiv>Remember To-Do (PH)</TitleDiv>
       <ButtonWrap>
-        <BtnInput placeholder="Add List" onKeyDown={KeyDown} />
-        <NewListBtn>+</NewListBtn>
+        <BtnInput
+          placeholder="Add List"
+          onKeyDown={KeyDown}
+          value={inputValue}
+          onChange={(event) => setInputValue(event.target.value)}
+        />
+        <NewListBtn onClick={() => SetListStateFn()}>+</NewListBtn>
       </ButtonWrap>
       <BodyDiv>
-        <ListCollection />
+        <ListCollection Props={listState} />
       </BodyDiv>
     </ContentWrapper>
   );

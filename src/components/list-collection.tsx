@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { Card } from "./";
 
-const ListCollection = () => {
+const ListCollection = (Props: any) => {
   return (
     <ContentWrapper>
-      <div></div>
+      <Card Props={Props} />
     </ContentWrapper>
   );
 };
