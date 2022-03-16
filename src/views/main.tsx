@@ -1,12 +1,32 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { ListCollection } from "../components";
+import { v4 as uuidv4 } from "uuid";
 
 const Main = () => {
+  const [listState, useListState] = useState({});
+
+  const KeyDown = (key: any) => {
+    if (key.keyCode !== 13) {
+      return;
+    } else {
+      SetListStateFn(key);
+    }
+  };
+
+  const SetListStateFn = (key: any) => {
+    useListState({
+      id: uuidv4(),
+      title: key.target.value,
+      tasks: {},
+    });
+  };
+
   return (
     <ContentWrapper>
       <TitleDiv>Remember To-Do</TitleDiv>
       <ButtonWrap>
-        <BtnTxt>Add List</BtnTxt>
+        <BtnInput placeholder="Add List" onKeyDown={KeyDown} />
         <NewListBtn>+</NewListBtn>
       </ButtonWrap>
       <BodyDiv>
@@ -20,7 +40,8 @@ const Main = () => {
 const ContentWrapper = styled.div`
   height: 100vh;
   width: 100vw;
-  background-color: #454955;
+  /* background-color: #454955; */
+  background-color: #0e110e;
   display: flex;
   flex: 10;
   flex-direction: column;
@@ -38,7 +59,7 @@ const TitleDiv = styled.div`
   font-size: 28px;
   padding: 20px 0px;
   font-style: italic;
-  border-bottom: 1px solid #48beff;
+  border-bottom: 2px solid #48beff;
 `;
 
 const BodyDiv = styled.div`
@@ -54,18 +75,25 @@ const ButtonWrap = styled.div`
   padding: 20px;
 `;
 
-const BtnTxt = styled.button`
+const BtnInput = styled.input`
   border: none;
-  background-color: #454955;
+  border-bottom: 1px solid #48beff;
+  background-color: #0e110e;
   color: #48beff;
+  outline: none;
+
+  ::placeholder {
+    color: #48beff;
+  }
 `;
 
 const NewListBtn = styled.button`
   border: none;
-  background-color: #454955;
+  background-color: #0e110e;
   border: 1px solid #48beff;
   border-radius: 50%;
   color: #48beff;
+  margin-left: 8px;
 `;
 
 /** Exports */
