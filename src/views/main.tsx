@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { ListCollection } from "../components";
 import { v4 as uuidv4 } from "uuid";
 
-type ListState = {
+export type ListState = {
   id: string;
   title: string;
   tasks: any;
@@ -22,12 +22,17 @@ const Main = () => {
     }
   };
 
+  const deleteList = (listId: string) => {
+    setListState((previousState) => {
+      return previousState.filter((list) => list.id !== listId);
+    });
+  };
+
+  useEffect(() => {
+    console.log("newListState: ", listState);
+  }, [listState]);
+
   const SetListStateFn = () => {
-    // setListState({
-    //   id: uuidv4(),
-    //   title: key.target.value,
-    //   tasks: {},
-    // });
     setListState((previousState) => {
       return [
         ...previousState,
@@ -54,7 +59,7 @@ const Main = () => {
         <NewListBtn onClick={() => SetListStateFn()}>+</NewListBtn>
       </ButtonWrap>
       <BodyDiv>
-        <ListCollection Props={listState} />
+        <ListCollection listState={listState} deleteList={deleteList} />
       </BodyDiv>
     </ContentWrapper>
   );
@@ -64,7 +69,6 @@ const Main = () => {
 const ContentWrapper = styled.div`
   height: 100vh;
   width: 100vw;
-  /* background-color: #454955; */
   background-color: #0e110e;
   display: flex;
   flex: 10;
@@ -84,11 +88,12 @@ const TitleDiv = styled.div`
   padding: 20px 0px;
   font-style: italic;
   border-bottom: 2px solid #48beff;
+  background-color: #2d3038;
 `;
 
 const BodyDiv = styled.div`
   height: 100%;
-  width: 100%;
+  width: 100vw;
   display: flex;
   flex: 9.5;
 `;
