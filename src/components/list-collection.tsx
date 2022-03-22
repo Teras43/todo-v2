@@ -2,7 +2,10 @@ import styled from "styled-components";
 import { Card } from "./";
 import { ListState } from "../views/main";
 
-const ListCollection = (props: { listState: ListState; deleteList: any }) => {
+const ListCollection = (props: {
+  listState: ListState;
+  deleteList: (listId: string) => void;
+}) => {
   return (
     <ContentWrapper>
       <Card listState={props.listState} deleteList={props.deleteList} />
