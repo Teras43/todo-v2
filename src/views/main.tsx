@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { ListCollection } from "../components";
 import { v4 as uuidv4 } from "uuid";
+import TaskView from "./tasks";
 
 export type ListState = {
   id: string;
@@ -49,17 +50,18 @@ const Main = () => {
   return (
     <ContentWrapper>
       <TitleDiv>Remember To-Do (PH)</TitleDiv>
-      <ButtonWrap>
-        <BtnInput
-          placeholder="Add List"
-          onKeyDown={KeyDown}
-          value={inputValue}
-          onChange={(event) => setInputValue(event.target.value)}
-        />
-        <NewListBtn onClick={() => SetListStateFn()}>+</NewListBtn>
-      </ButtonWrap>
       <BodyDiv>
+        <ButtonWrap>
+          <BtnInput
+            placeholder="Add List"
+            onKeyDown={KeyDown}
+            value={inputValue}
+            onChange={(event) => setInputValue(event.target.value)}
+          />
+          <NewListBtn onClick={() => SetListStateFn()}>+</NewListBtn>
+        </ButtonWrap>
         <ListCollection listState={listState} deleteList={deleteList} />
+        <TaskView />
       </BodyDiv>
     </ContentWrapper>
   );
@@ -93,14 +95,14 @@ const TitleDiv = styled.div`
 
 const BodyDiv = styled.div`
   height: 100%;
-  width: 100vw;
+  width: 100%;
   display: flex;
+  flex-direction: column;
   flex: 9.5;
 `;
 
 const ButtonWrap = styled.div`
   height: 3%;
-  width: 100%;
   padding: 20px;
 `;
 

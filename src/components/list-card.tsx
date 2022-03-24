@@ -67,7 +67,6 @@ const Card = ({ listState, deleteList }: Props) => {
 /** Component Styles */
 const CardWrapper = styled.div`
   height: 4em;
-  width: 100%;
   border: 2px solid #48beff;
   display: flex;
   flex: 10;
@@ -98,6 +97,10 @@ const ListTitleInput = styled.input`
   align-items: center;
   padding-left: 10px;
   font-weight: 700;
+  outline: none;
+  background-color: #40434e;
+  border: 1px solid #48beff;
+  text-decoration: underline;
 `;
 
 const IconWrap = styled.div`

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Card } from "./";
+import { ListCard } from "./";
 import { ListState } from "../views/main";
 
 const ListCollection = (props: {
@@ -8,7 +8,7 @@ const ListCollection = (props: {
 }) => {
   return (
     <ContentWrapper>
-      <Card listState={props.listState} deleteList={props.deleteList} />
+      <ListCard listState={props.listState} deleteList={props.deleteList} />
     </ContentWrapper>
   );
 };
@@ -17,7 +17,7 @@ const ListCollection = (props: {
 const ContentWrapper = styled.div`
   height: 100%;
   width: 100%;
-  margin: 20px;
+  padding: 20px;
 `;
 
 /** List Exports */
