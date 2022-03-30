@@ -2,24 +2,42 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { ListCollection } from "../components";
 import { v4 as uuidv4 } from "uuid";
-import TaskView from "./tasks";
+import TaskCollection from "../components/task-collection";
 
 export type ListState = {
   id: string;
   title: string;
-  tasks: any;
+  tasks: TaskType[];
 }[];
+
+export type TaskType = {
+  id: string;
+  title: string;
+  isComplete: boolean;
+};
 
 const Main = () => {
   const [listState, setListState] = useState<ListState>([]);
 
   const [inputValue, setInputValue] = useState<string>("");
 
+  const [taskInputValue, setTaskInputValue] = useState<string>("");
+
+  const [currentSelectList, setCurrentSelectList] = useState<string | null>(
+    null
+  );
+
   const KeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.code !== "Enter") {
       return;
     } else {
-      SetListStateFn();
+      currentSelectList
+        ? SetListTaskFn(currentSelectList, {
+            id: uuidv4(),
+            title: taskInputValue,
+            isComplete: false,
+          })
+        : SetListStateFn();
     }
   };
 
@@ -40,28 +58,51 @@ const Main = () => {
         {
           id: uuidv4(),
           title: inputValue,
-          tasks: {},
+          tasks: [],
         },
       ];
     });
     setInputValue("");
   };
 
+  const SetListTaskFn = (listId: string, task: TaskType) => {
+    setListState((prevState) => {
+      const newState = prevState.map((list) => {
+        if (list.id !== listId) return list;
+        return {
+          id: list.id,
+          title: list.title,
+          tasks: [...list.tasks, task],
+        };
+      });
+      return newState;
+    });
+  };
+
   return (
     <ContentWrapper>
       <TitleDiv>Remember To-Do (PH)</TitleDiv>
       <BodyDiv>
-        <ButtonWrap>
-          <BtnInput
-            placeholder="Add List"
-            onKeyDown={KeyDown}
-            value={inputValue}
-            onChange={(event) => setInputValue(event.target.value)}
+        <>
+          <ListCollection
+            listState={listState}
+            deleteList={deleteList}
+            setCurrentList={setCurrentSelectList}
+            keyDown={KeyDown}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            setListStateFn={SetListStateFn}
           />
-          <NewListBtn onClick={() => SetListStateFn()}>+</NewListBtn>
-        </ButtonWrap>
-        <ListCollection listState={listState} deleteList={deleteList} />
-        <TaskView />
+          <TaskCollection
+            listState={listState}
+            listTaskFn={SetListTaskFn}
+            taskInputValue={taskInputValue}
+            setTaskInputValue={setTaskInputValue}
+            keyDown={KeyDown}
+            setListTaskFn={SetListTaskFn}
+            currentList={currentSelectList}
+          />
+        </>
       </BodyDiv>
     </ContentWrapper>
   );
@@ -99,32 +140,6 @@ const BodyDiv = styled.div`
   display: flex;
   flex-direction: column;
   flex: 9.5;
-`;
-
-const ButtonWrap = styled.div`
-  height: 3%;
-  padding: 20px;
-`;
-
-const BtnInput = styled.input`
-  border: none;
-  border-bottom: 1px solid #48beff;
-  background-color: #0e110e;
-  color: #48beff;
-  outline: none;
-
-  ::placeholder {
-    color: #48beff;
-  }
-`;
-
-const NewListBtn = styled.button`
-  border: none;
-  background-color: #0e110e;
-  border: 1px solid #48beff;
-  border-radius: 50%;
-  color: #48beff;
-  margin-left: 8px;
 `;
 
 /** Exports */

@@ -12,9 +12,10 @@ import { ListState } from "../views/main";
 type Props = {
   listState: ListState;
   deleteList: (id: string) => void;
+  setCurrentList: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-const Card = ({ listState, deleteList }: Props) => {
+const Card = ({ listState, deleteList, setCurrentList }: Props) => {
   const [editId, setEditId] = useState<string>("");
 
   const [listInputValue, setListInputValue] = useState<string>("");
@@ -32,7 +33,7 @@ const Card = ({ listState, deleteList }: Props) => {
   return (
     <>
       {listState.map((list, index) => (
-        <CardWrapper key={index + 1}>
+        <CardWrapper key={index + 1} onClick={() => setCurrentList(list.id)}>
           <IconWrap
             onClick={() => {
               setListInputValue(list.title);
