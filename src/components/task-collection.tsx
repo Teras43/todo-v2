@@ -5,28 +5,28 @@ import { v4 as uuidv4 } from "uuid";
 
 type Props = {
   listState: ListState;
-  listTaskFn: (listId: string, task: TaskType) => void;
   taskInputValue: string;
   setTaskInputValue: React.Dispatch<React.SetStateAction<string>>;
-  keyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   setListTaskFn: (listId: string, task: TaskType) => void;
+  keyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   currentList: string | null;
+  deleteTask: (taskId: string) => void;
 };
 
 const TaskCollection = ({
   listState,
-  listTaskFn,
   taskInputValue,
   setTaskInputValue,
   keyDown,
   setListTaskFn,
   currentList,
+  deleteTask,
 }: Props) => {
   return (
     <ContentWrapper>
       <ButtonWrap>
         <BtnInput
-          placeholder="Add List"
+          placeholder="Add Task"
           onKeyDown={keyDown}
           value={taskInputValue}
           onChange={(event) => setTaskInputValue(event.target.value)}
@@ -43,7 +43,14 @@ const TaskCollection = ({
           +
         </NewListBtn>
       </ButtonWrap>
-      <TaskCard listState={listState} listTaskFn={listTaskFn} />
+      <TaskCard
+        listState={listState}
+        setListTaskFn={setListTaskFn}
+        taskInputValue={taskInputValue}
+        setTaskInputValue={setTaskInputValue}
+        currentList={currentList}
+        deleteTask={deleteTask}
+      />
     </ContentWrapper>
   );
 };

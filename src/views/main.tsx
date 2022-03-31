@@ -17,16 +17,21 @@ export type TaskType = {
 };
 
 const Main = () => {
+  /** List state */
   const [listState, setListState] = useState<ListState>([]);
 
+  /** List input state */
   const [inputValue, setInputValue] = useState<string>("");
 
+  /** Task input state */
   const [taskInputValue, setTaskInputValue] = useState<string>("");
 
+  /** Current selected list */
   const [currentSelectList, setCurrentSelectList] = useState<string | null>(
     null
   );
 
+  /** Function that checks if enter was pressed, then will set either the state for the list or tasks depending on whether there is a currently selected list. */
   const KeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.code !== "Enter") {
       return;
@@ -41,16 +46,34 @@ const Main = () => {
     }
   };
 
+  /** Function that deletes the list from the list state */
   const deleteList = (listId: string) => {
     setListState((previousState) => {
       return previousState.filter((list) => list.id !== listId);
     });
   };
 
+  /** Function that deletes the task from the task array */
+  const deleteTask = (taskId: string) => {
+    setListState((prevState) => {
+      const newState = prevState.map((list) => {
+        if (list.id !== currentSelectList) return list;
+        return {
+          id: list.id,
+          title: list.title,
+          tasks: list.tasks.filter((task) => task.id !== taskId),
+        };
+      });
+      return newState;
+    });
+  };
+
+  /** Currently the console log to check listState */
   useEffect(() => {
     console.log("newListState: ", listState);
   }, [listState]);
 
+  /** Function that spreads the current state of the list, then adds a new one. */
   const SetListStateFn = () => {
     setListState((previousState) => {
       return [
@@ -65,6 +88,7 @@ const Main = () => {
     setInputValue("");
   };
 
+  /** Function that sets the task state for the list that is selected. */
   const SetListTaskFn = (listId: string, task: TaskType) => {
     setListState((prevState) => {
       const newState = prevState.map((list) => {
@@ -95,12 +119,12 @@ const Main = () => {
           />
           <TaskCollection
             listState={listState}
-            listTaskFn={SetListTaskFn}
             taskInputValue={taskInputValue}
             setTaskInputValue={setTaskInputValue}
             keyDown={KeyDown}
             setListTaskFn={SetListTaskFn}
             currentList={currentSelectList}
+            deleteTask={deleteTask}
           />
         </>
       </BodyDiv>

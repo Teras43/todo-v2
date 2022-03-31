@@ -7,37 +7,62 @@ import { ListState, TaskType } from "../views/main";
 
 type Props = {
   listState: ListState;
-  listTaskFn: (listId: string, task: TaskType) => void;
+  setListTaskFn: (listId: string, task: TaskType) => void;
+  taskInputValue: string;
+  setTaskInputValue: React.Dispatch<React.SetStateAction<string>>;
+  currentList: string | null;
+  deleteTask: (taskId: string) => void;
 };
 
-const TaskCard = ({ listState, listTaskFn }: Props) => {
+const TaskCard = ({
+  listState,
+  setListTaskFn,
+  taskInputValue,
+  setTaskInputValue,
+  currentList,
+  deleteTask,
+}: Props) => {
+  const [taskEditId, setTaskEditId] = useState<string>("");
+
+  const SetTitle = (taskId: string) => {
+    listState.forEach((task) => {
+      if (task.id === taskId) {
+        task.title = taskInputValue;
+      }
+    });
+    setTaskInputValue("");
+    setTaskEditId("");
+  };
+
+  const currentListObj = listState.find((list) => list.id === currentList);
+
   return (
     <>
-      {listState.map((list, index) => (
+      {currentListObj?.tasks.map((task, index) => (
         <CardWrapper key={index + 1}>
           <IconWrap
             onClick={() => {
-              setListInputValue(list.title);
-              setEditId(list.id);
+              setTaskInputValue(task.title);
+              setTaskEditId(task.id);
             }}
           >
             <ImgIcon src={pen_img} />
           </IconWrap>
-          {editId === list.id ? (
+          {taskEditId === task.id ? (
             <>
               <TaskTitleInput
                 placeholder={"New Task Title"}
-                value={listInputValue}
-                onChange={(event) => setListInputValue(event.target.value)}
+                value={taskInputValue}
+                onChange={(event) => setTaskInputValue(event.target.value)}
               />
-              <IconWrap onClick={() => SetTitle(list.id)}>
+              <IconWrap onClick={() => SetTitle(task.id)}>
                 <ImgIcon src={check_mark} />
               </IconWrap>
             </>
           ) : (
-            <TaskTitle>{list.title}</TaskTitle>
+            <TaskTitle>{task.title}</TaskTitle>
           )}
-          <IconWrap onClick={() => deleteList(list.id)}>
+          <IconWrap onClick={() => deleteTask(task.id)}>
             <ImgIcon src={cross_mark} />
           </IconWrap>
         </CardWrapper>
