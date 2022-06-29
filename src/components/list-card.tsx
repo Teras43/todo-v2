@@ -1,13 +1,10 @@
 import { useState } from "react";
 import styled from "styled-components";
-import cross_mark from "../assets/images/cross-mark.png";
-import pen_img from "../assets/images/pen.png";
-import check_mark from "../assets/images/checkmark.png";
-import { ListState } from "../views/main";
-
-// Edit Icon Attribution Link: <a href="https://www.flaticon.com/free-icons/education" title="education icons">Education icons created by Marcus Christensen - Flaticon</a>
-// Delete Icon Attribution Link: <a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Andrean Prabowo - Flaticon</a>
-// Checkmark Icon Attribution Link: <a href="https://www.flaticon.com/free-icons/checkmark" title="checkmark icons">Checkmark icons created by Alfredo Hernandez - Flaticon</a>
+import pencil_img from "assets/images/pencil.png";
+import confirm from "assets/images/confirm.png";
+import trash_can from "assets/images/trash-bin.png";
+import { ListState } from "views/main";
+import type { TaskType } from "views/main";
 
 type Props = {
   listState: ListState;
@@ -30,17 +27,29 @@ const Card = ({ listState, deleteList, setCurrentList }: Props) => {
     setEditId("");
   };
 
+  const keyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    list: {
+      id: string;
+      title: string;
+      tasks: TaskType[];
+    }
+  ) => {
+    if (event.code !== "Enter") return;
+    else SetTitle(list.id);
+  };
+
   return (
     <>
       {listState.map((list, index) => (
-        <CardWrapper key={index + 1} onClick={() => setCurrentList(list.id)}>
+        <CardWrapper key={index + 1}>
           <IconWrap
             onClick={() => {
               setListInputValue(list.title);
               setEditId(list.id);
             }}
           >
-            <ImgIcon src={pen_img} />
+            <ImgIcon src={pencil_img} />
           </IconWrap>
           {editId === list.id ? (
             <>
@@ -48,17 +57,24 @@ const Card = ({ listState, deleteList, setCurrentList }: Props) => {
                 placeholder={"New List Title"}
                 value={listInputValue}
                 onChange={(event) => setListInputValue(event.target.value)}
+                onKeyDown={(event) => {
+                  keyDown(event, list);
+                }}
               />
               <IconWrap onClick={() => SetTitle(list.id)}>
-                <ImgIcon src={check_mark} />
+                <ImgIcon src={confirm} />
               </IconWrap>
             </>
           ) : (
-            <ListTitle>{list.title}</ListTitle>
+            <>
+              <ListTitle onClick={() => setCurrentList(list.id)}>
+                {list.title}
+              </ListTitle>
+              <IconWrap onClick={() => deleteList(list.id)}>
+                <ImgIcon src={trash_can} />
+              </IconWrap>
+            </>
           )}
-          <IconWrap onClick={() => deleteList(list.id)}>
-            <ImgIcon src={cross_mark} />
-          </IconWrap>
         </CardWrapper>
       ))}
     </>
@@ -76,6 +92,8 @@ const CardWrapper = styled.div`
   border-radius: 8px;
   background-color: #2d3038;
   margin-bottom: 10px;
+  margin-left: 15px;
+  margin-right: 15px;
 `;
 
 const ListTitle = styled.div`
@@ -115,8 +133,8 @@ const IconWrap = styled.div`
 `;
 
 const ImgIcon = styled.img`
-  height: 50%;
-  width: 50%;
+  height: 65%;
+  width: 65%;
 `;
 
 /** Exports */

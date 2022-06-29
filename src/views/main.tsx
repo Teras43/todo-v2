@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { ListCollection } from "../components";
+import { ListCollection } from "components";
 import { v4 as uuidv4 } from "uuid";
-import TaskCollection from "../components/task-collection";
+import TaskCollection from "components/task-collection";
 
 export type ListState = {
   id: string;
@@ -27,9 +27,7 @@ const Main = () => {
   const [taskInputValue, setTaskInputValue] = useState<string>("");
 
   /** Current selected list */
-  const [currentSelectList, setCurrentSelectList] = useState<string | null>(
-    null
-  );
+  const [currentSelectList, setCurrentSelectList] = useState<string | null>("");
 
   /** Function that checks if enter was pressed, then will set either the state for the list or tasks depending on whether there is a currently selected list. */
   const KeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -68,11 +66,6 @@ const Main = () => {
     });
   };
 
-  /** Currently the console log to check listState */
-  useEffect(() => {
-    console.log("newListState: ", listState);
-  }, [listState]);
-
   /** Function that spreads the current state of the list, then adds a new one. */
   const SetListStateFn = () => {
     setListState((previousState) => {
@@ -101,32 +94,33 @@ const Main = () => {
       });
       return newState;
     });
+    setTaskInputValue("");
   };
 
   return (
     <ContentWrapper>
       <TitleDiv>Remember To-Do (PH)</TitleDiv>
       <BodyDiv>
-        <>
-          <ListCollection
-            listState={listState}
-            deleteList={deleteList}
-            setCurrentList={setCurrentSelectList}
-            keyDown={KeyDown}
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            setListStateFn={SetListStateFn}
-          />
-          <TaskCollection
-            listState={listState}
-            taskInputValue={taskInputValue}
-            setTaskInputValue={setTaskInputValue}
-            keyDown={KeyDown}
-            setListTaskFn={SetListTaskFn}
-            currentList={currentSelectList}
-            deleteTask={deleteTask}
-          />
-        </>
+        <ListCollection
+          listState={listState}
+          deleteList={deleteList}
+          currentList={currentSelectList}
+          setCurrentList={setCurrentSelectList}
+          keyDown={KeyDown}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          setListStateFn={SetListStateFn}
+        />
+        <TaskCollection
+          listState={listState}
+          taskInputValue={taskInputValue}
+          setTaskInputValue={setTaskInputValue}
+          keyDown={KeyDown}
+          setListTaskFn={SetListTaskFn}
+          currentList={currentSelectList}
+          deleteTask={deleteTask}
+          setCurrentList={setCurrentSelectList}
+        />
       </BodyDiv>
     </ContentWrapper>
   );
@@ -137,33 +131,31 @@ const ContentWrapper = styled.div`
   height: 100vh;
   width: 100vw;
   background-color: #0e110e;
-  display: flex;
-  flex: 10;
-  flex-direction: column;
 `;
 
 const TitleDiv = styled.div`
-  height: 100%;
+  height: 75px;
   width: 100%;
   display: flex;
-  flex: 0.5;
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center; */
+  align-items: flex-end;
   color: #48beff;
   font-weight: 700;
-  font-size: 28px;
-  padding: 20px 0px;
+  font-size: 24px;
+  padding: 20px 0px 5px 10px;
   font-style: italic;
   border-bottom: 2px solid #48beff;
   background-color: #2d3038;
+  box-sizing: border-box;
 `;
 
 const BodyDiv = styled.div`
-  height: 100%;
+  position: relative;
+  height: calc(100% - 75px);
   width: 100%;
   display: flex;
   flex-direction: column;
-  flex: 9.5;
+  overflow: hidden;
 `;
 
 /** Exports */

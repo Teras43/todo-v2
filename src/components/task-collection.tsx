@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { TaskCard } from "./";
-import { ListState, TaskType } from "../views/main";
+import { ListState, TaskType } from "views/main";
 import { v4 as uuidv4 } from "uuid";
+import backBtn from "assets/images/back-btn.png";
 
 type Props = {
   listState: ListState;
@@ -9,8 +10,9 @@ type Props = {
   setTaskInputValue: React.Dispatch<React.SetStateAction<string>>;
   setListTaskFn: (listId: string, task: TaskType) => void;
   keyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  currentList: string | null;
   deleteTask: (taskId: string) => void;
+  currentList: string | null;
+  setCurrentList: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 const TaskCollection = ({
@@ -21,31 +23,40 @@ const TaskCollection = ({
   setListTaskFn,
   currentList,
   deleteTask,
+  setCurrentList,
 }: Props) => {
   return (
-    <ContentWrapper>
+    <ContentWrapper currentList={currentList}>
       <ButtonWrap>
-        <BtnInput
-          placeholder="Add Task"
-          onKeyDown={keyDown}
-          value={taskInputValue}
-          onChange={(event) => setTaskInputValue(event.target.value)}
-        />
-        <NewListBtn
-          onClick={() =>
-            setListTaskFn(currentList ?? "", {
-              id: uuidv4(),
-              title: taskInputValue,
-              isComplete: false,
-            })
-          }
-        >
-          +
-        </NewListBtn>
+        <div>
+          <BtnInput
+            placeholder="Add Task"
+            onKeyDown={keyDown}
+            value={taskInputValue}
+            onChange={(event) => setTaskInputValue(event.target.value)}
+          />
+          <NewListBtn
+            onClick={() =>
+              setListTaskFn(currentList ?? "", {
+                id: uuidv4(),
+                title: taskInputValue,
+                isComplete: false,
+              })
+            }
+          >
+            +
+          </NewListBtn>
+        </div>
+        <ImgWrap>
+          <BackImg
+            src={backBtn}
+            alt="Go back"
+            onClick={() => setCurrentList(null)}
+          />
+        </ImgWrap>
       </ButtonWrap>
       <TaskCard
         listState={listState}
-        setListTaskFn={setListTaskFn}
         taskInputValue={taskInputValue}
         setTaskInputValue={setTaskInputValue}
         currentList={currentList}
@@ -56,15 +67,47 @@ const TaskCollection = ({
 };
 
 /** List Styles */
-const ContentWrapper = styled.div`
+const ContentWrapper = styled.div<{ currentList: string | null }>`
+  position: absolute;
+  right: -100%;
   height: 100%;
   width: 100%;
-  padding: 20px;
+  overflow: hidden;
+  z-index: 10;
+  top: 0;
+  background-color: #0e110e;
+  @keyframes slideIn {
+    from {
+      right: -100%;
+    }
+
+    to {
+      right: 0%;
+    }
+  }
+  @keyframes slideOut {
+    from {
+      right: 0%;
+    }
+
+    to {
+      right: -100%;
+    }
+  }
+  animation: ${({ currentList }) => {
+      if (currentList !== "") {
+        return currentList ? "slideIn" : "slideOut";
+      }
+    }}
+    0.3s ease-out;
+  animation-fill-mode: forwards;
 `;
 
 const ButtonWrap = styled.div`
   height: 3%;
   padding: 20px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const BtnInput = styled.input`
@@ -86,6 +129,16 @@ const NewListBtn = styled.button`
   border-radius: 50%;
   color: #48beff;
   margin-left: 8px;
+`;
+
+const ImgWrap = styled.div`
+  height: 30px;
+  width: 30px;
+`;
+
+const BackImg = styled.img`
+  height: 100%;
+  width: 100%;
 `;
 
 /** List Exports */

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { ListCard } from "./";
-import { ListState } from "../views/main";
+import { ListState } from "views/main";
 
 type Props = {
   listState: ListState;
@@ -10,11 +10,13 @@ type Props = {
   inputValue: string;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
   setListStateFn: () => void;
+  currentList: string | null;
 };
 
 const ListCollection = ({
   listState,
   deleteList,
+  currentList,
   setCurrentList,
   keyDown,
   inputValue,
@@ -43,9 +45,11 @@ const ListCollection = ({
 
 /** List Styles */
 const ContentWrapper = styled.div`
+  position: absolute;
   height: 100%;
   width: 100%;
-  padding: 20px;
+  z-index: 5;
+  top: 0;
 `;
 
 const ButtonWrap = styled.div`

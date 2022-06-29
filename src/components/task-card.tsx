@@ -1,13 +1,12 @@
 import { useState } from "react";
 import styled from "styled-components";
-import cross_mark from "../assets/images/cross-mark.png";
-import pen_img from "../assets/images/pen.png";
-import check_mark from "../assets/images/checkmark.png";
-import { ListState, TaskType } from "../views/main";
+import pencil_img from "assets/images/pencil.png";
+import confirm from "assets/images/confirm.png";
+import trash_can from "assets/images/trash-bin.png";
+import { ListState } from "views/main";
 
 type Props = {
   listState: ListState;
-  setListTaskFn: (listId: string, task: TaskType) => void;
   taskInputValue: string;
   setTaskInputValue: React.Dispatch<React.SetStateAction<string>>;
   currentList: string | null;
@@ -16,7 +15,6 @@ type Props = {
 
 const TaskCard = ({
   listState,
-  setListTaskFn,
   taskInputValue,
   setTaskInputValue,
   currentList,
@@ -46,7 +44,7 @@ const TaskCard = ({
               setTaskEditId(task.id);
             }}
           >
-            <ImgIcon src={pen_img} />
+            <ImgIcon src={pencil_img} />
           </IconWrap>
           {taskEditId === task.id ? (
             <>
@@ -56,15 +54,17 @@ const TaskCard = ({
                 onChange={(event) => setTaskInputValue(event.target.value)}
               />
               <IconWrap onClick={() => SetTitle(task.id)}>
-                <ImgIcon src={check_mark} />
+                <ImgIcon src={confirm} />
               </IconWrap>
             </>
           ) : (
-            <TaskTitle>{task.title}</TaskTitle>
+            <>
+              <TaskTitle>{task.title}</TaskTitle>
+              <IconWrap onClick={() => deleteTask(task.id)}>
+                <ImgIcon src={trash_can} />
+              </IconWrap>
+            </>
           )}
-          <IconWrap onClick={() => deleteTask(task.id)}>
-            <ImgIcon src={cross_mark} />
-          </IconWrap>
         </CardWrapper>
       ))}
     </>
@@ -82,6 +82,8 @@ const CardWrapper = styled.div`
   border-radius: 8px;
   background-color: #2d3038;
   margin-bottom: 10px;
+  margin-left: 15px;
+  margin-right: 15px;
 `;
 
 const TaskTitle = styled.div`
@@ -121,8 +123,8 @@ const IconWrap = styled.div`
 `;
 
 const ImgIcon = styled.img`
-  height: 50%;
-  width: 50%;
+  height: 65%;
+  width: 65%;
 `;
 
 /** Exports */
